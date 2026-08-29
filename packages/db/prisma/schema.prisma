@@ -1,0 +1,125 @@
+// Restaurant Social Commerce Engine — data model
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Restaurant {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  city        String
+  cuisineTags String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  menuItems   MenuItem[]
+  tiktokShop  TikTokShop?
+}
+
+model MenuItem {
+  id            String   @id @default(cuid())
+  restaurantId  String
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
+  name          String
+  description   String?
+  priceCents    Int
+  currency      String   @default("USD")
+  imageUrl      String?
+  isPerishable  Boolean  @default(true)
+  fulfillment   FulfillmentType @default(PICKUP)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  tiktokProduct TikTokProduct?
+}
+
+enum FulfillmentType {
+  PICKUP
+  LOCAL_DELIVERY
+  SHIPPING
+}
+
+model TikTokShop {
+  id            String   @id @default(cuid())
+  restaurantId  String   @unique
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
+  shopId        String   @unique // TikTok shop_id
+  appKey        String
+  // appSecret stored in secret manager, not DB
+  accessToken   String?
+  region        String   @default("US")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  products      TikTokProduct[]
+}
+
+model TikTokProduct {
+  id            String   @id @default(cuid())
+  shopId        String
+  shop          TikTokShop @relation(fields: [shopId], references: [id])
+  menuItemId    String   @unique
+  menuItem      MenuItem @relation(fields: [menuItemId], references: [id])
+  tiktokProductId String? @unique
+  status        ProductStatus @default(DRAFT)
+  lastSyncedAt  DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum ProductStatus {
+  DRAFT
+  PENDING_REVIEW
+  LIVE
+  REJECTED
+}
+
+model Order {
+  id              String   @id @default(cuid())
+  tiktokOrderId   String   @unique
+  shopId          String
+  status          String
+  totalCents      Int
+  currency        String   @default("USD")
+  lineItems       Json
+  buyer           Json?
+  rawPayload      Json
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model CreatorLead {
+  id          String   @id @default(cuid())
+  handle      String
+  platform    String // tiktok | instagram
+  followers   Int?
+  nicheTags   String[]
+  hookSummary String?
+  sourceUrl   String?
+  score       Float?
+  createdAt   DateTime @default(now())
+}
+
+model ContentDraft {
+  id          String   @id @default(cuid())
+  creatorLeadId String?
+  menuItemId  String?
+  hook        String
+  script      String
+  cta         String
+  status      DraftStatus @default(PENDING_APPROVAL)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum DraftStatus {
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  PUBLISHED
+}
