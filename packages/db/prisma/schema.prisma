@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ContentDraftStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  PUBLISHED
+  REJECTED
+}
+
+enum TikTokProductStatus {
+  DRAFT
+  PENDING_REVIEW
+  LIVE
+  REJECTED
+  DELISTED
+}
+
+enum OrderStatus {
+  UNPAID
+  ON_HOLD
+  AWAITING_SHIPMENT
+  AWAITING_COLLECTION
+  IN_TRANSIT
+  DELIVERED
+  COMPLETED
+  CANCELLED
+}
+
+model Restaurant {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  timezone    String   @default("America/New_York")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  menuItems   MenuItem[]
+  creatorLeads CreatorLead[]
+  contentDrafts ContentDraft[]
+}
+
+model MenuItem {
+  id            String   @id @default(cuid())
+  restaurantId  String
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
+  name          String
+  description   String?
+  priceCents    Int
+  currency      String   @default("USD")
+  isShelfStable Boolean  @default(false)
+  imageUrl      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  tiktokProduct TikTokProduct?
+  contentDrafts ContentDraft[]
+
+  @@index([restaurantId])
+}
+
+model TikTokProduct {
+  id                 String   @id @default(cuid())
+  menuItemId         String   @unique
+  menuItem           MenuItem @relation(fields: [menuItemId], references: [id])
+  tiktokProductId    String?  @unique
+  status             TikTokProductStatus @default(DRAFT)
+  lastSyncedAt       DateTime?
+  syncError          String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  orders             Order[]
+}
+
+model Order {
+  id               String   @id @default(cuid())
+  tiktokOrderId    String   @unique
+  tiktokProductId  String?
+  tiktokProduct    TikTokProduct? @relation(fields: [tiktokProductId], references: [id])
+  status           OrderStatus @default(UNPAID)
+  totalCents       Int
+  currency         String   @default("USD")
+  rawPayload       Json?
+  receivedAt       DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model CreatorLead {
+  id             String   @id @default(cuid())
+  restaurantId   String
+  restaurant     Restaurant @relation(fields: [restaurantId], references: [id])
+  handle         String
+  platform       String   @default("tiktok")
+  followerCount  Int?
+  notes          String?
+  sourcedBy      String   @default("grok-bot")
+  createdAt      DateTime @default(now())
+
+  @@index([restaurantId])
+}
+
+model ContentDraft {
+  id            String   @id @default(cuid())
+  restaurantId  String
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
+  menuItemId    String?
+  menuItem      MenuItem? @relation(fields: [menuItemId], references: [id])
+  title         String
+  script        String
+  status        ContentDraftStatus @default(DRAFT)
+  createdBy     String   @default("grok-bot")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  approvals     Approval[]
+
+  @@index([restaurantId])
+}
+
+model Approval {
+  id             String   @id @default(cuid())
+  contentDraftId String
+  contentDraft   ContentDraft @relation(fields: [contentDraftId], references: [id])
+  status         ApprovalStatus @default(PENDING)
+  reviewerEmail  String?
+  reason         String?
+  decidedAt      DateTime?
+  createdAt      DateTime @default(now())
+
+  @@index([contentDraftId])
+}

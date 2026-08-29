@@ -1,0 +1,24 @@
+name: draft-script
+description: >
+  Drafts a shoppable short-form video script for a menu item, ending in an
+  explicit buy-now call to action pointing at the item's TikTok Shop product.
+  Always produces a ContentDraft with status PENDING_APPROVAL — never
+  publishes directly.
+inputs:
+  - name: menuItemId
+    type: string
+    required: true
+  - name: creatorLeadId
+    type: string
+    required: false
+outputs:
+  - name: contentDraft
+    type: ContentDraft
+tools:
+  - mcp:restaurant-api.getMenuItem
+  - mcp:restaurant-api.createContentDraft
+writes:
+  table: ContentDraft
+  status_field: status
+  initial_status: PENDING_APPROVAL
+  requires_approval: true

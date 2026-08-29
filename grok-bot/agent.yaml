@@ -1,0 +1,37 @@
+name: grok-bot-restaurant-scout
+description: >
+  Scouts trending local food creators and dishes, drafts shoppable TikTok
+  video scripts ending in a buy-now prompt, and feeds product/creator leads
+  into the restaurant-social-commerce-engine catalog for human approval.
+model: grok-4
+version: 1
+
+policy:
+  # Hard constraint: the bot must never take an action with real-world side
+  # effects (posting, publishing, spending) without an explicit human approval
+  # recorded in the Approval table.
+  requires_human_approval_for:
+    - publish_content
+    - create_tiktok_product
+    - spend_budget
+  read_only_actions:
+    - scout_trends
+    - draft_script
+    - create_content_draft
+    - create_creator_lead
+
+skills:
+  - ./skills/scout-trends.yaml
+  - ./skills/draft-script.yaml
+
+connectors: ./mcp-connectors.json
+
+routines:
+  - id: daily-scout
+    description: Runs once per day to find trending creators/dishes in the local market.
+    schedule: "0 8 * * *"
+    steps:
+      - skill: scout-trends
+      - skill: draft-script
+      - action: create_content_draft
+        status: PENDING_APPROVAL

@@ -1,0 +1,22 @@
+name: scout-trends
+description: >
+  Searches TikTok/Instagram trend signals for the restaurant's local market
+  and returns candidate creators and dish concepts. Read-only: writes only
+  CreatorLead records, never posts or contacts anyone.
+inputs:
+  - name: restaurantId
+    type: string
+    required: true
+  - name: city
+    type: string
+    required: true
+outputs:
+  - name: creatorLeads
+    type: CreatorLead[]
+tools:
+  - web_search
+  - mcp:restaurant-api.listMenuItems
+writes:
+  table: CreatorLead
+  status_field: null
+  requires_approval: false

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schema/connector.json",
+  "connectors": [
+    {
+      "name": "restaurant-api",
+      "description": "Read/write access to the restaurant catalog, content drafts, and creator leads for approval workflows.",
+      "transport": "http",
+      "baseUrl": "${API_BASE_URL}",
+      "auth": {
+        "type": "bearer",
+        "tokenEnvVar": "GROK_BOT_API_TOKEN"
+      },
+      "actions": [
+        { "name": "listMenuItems", "method": "GET", "path": "/menu-items" },
+        { "name": "getMenuItem", "method": "GET", "path": "/menu-items/{id}" },
+        {
+          "name": "createContentDraft",
+          "method": "POST",
+          "path": "/content-drafts",
+          "requiresApproval": true
+        },
+        {
+          "name": "createCreatorLead",
+          "method": "POST",
+          "path": "/creator-leads",
+          "requiresApproval": false
+        }
+      ]
+    }
+  ]
+}
