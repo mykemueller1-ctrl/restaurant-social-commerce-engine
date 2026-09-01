@@ -1,4 +1,5 @@
 // Restaurant Social Commerce Engine — data model
+// Primary tenant: Community Tap & Pizza (Fort Dodge, IA) — TikTok @community.tap
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,12 +14,21 @@ model Restaurant {
   name        String
   slug        String   @unique
   city        String
+  state       String?
+  addressLine1 String?
+  phone       String?
   cuisineTags String[]
+  orderingUrl String?
+  websiteUrl  String?
+  tiktokHandle String?
+  facebookPageName String?
+  instagramHandle  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   menuItems   MenuItem[]
   tiktokShop  TikTokShop?
+  metaPage    MetaPage?
 }
 
 model MenuItem {
@@ -79,6 +89,19 @@ enum ProductStatus {
   REJECTED
 }
 
+/// Facebook Page + linked Instagram Business for Meta Graph / Reels.
+/// Access tokens stay in env / secret manager — only public IDs here.
+model MetaPage {
+  id            String   @id @default(cuid())
+  restaurantId  String   @unique
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
+  pageId        String   @unique // META_PAGE_ID
+  pageName      String
+  igUserId      String?  // META_IG_USER_ID when IG professional is linked
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 model Order {
   id              String   @id @default(cuid())
   tiktokOrderId   String   @unique
@@ -96,7 +119,7 @@ model Order {
 model CreatorLead {
   id          String   @id @default(cuid())
   handle      String
-  platform    String // tiktok | instagram
+  platform    String // tiktok | instagram | facebook
   followers   Int?
   nicheTags   String[]
   hookSummary String?
@@ -112,6 +135,7 @@ model ContentDraft {
   hook        String
   script      String
   cta         String
+  platform    String?  // tiktok | facebook_reels | instagram
   status      DraftStatus @default(PENDING_APPROVAL)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

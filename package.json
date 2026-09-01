@@ -12,7 +12,8 @@
     "typecheck": "pnpm -r typecheck",
     "db:generate": "pnpm --filter @rsc/db generate",
     "db:migrate": "pnpm --filter @rsc/db migrate",
-    "db:push": "pnpm --filter @rsc/db push"
+    "db:push": "pnpm --filter @rsc/db push",
+    "db:seed": "pnpm --filter @rsc/db seed"
   },
   "devDependencies": {
     "typescript": "^5.6.3",
