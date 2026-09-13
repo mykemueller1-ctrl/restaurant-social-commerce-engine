@@ -1,0 +1,114 @@
+.buy {
+  min-height: 100vh;
+  margin: 0 auto;
+  max-width: 28rem;
+  padding: 1.25rem 1.15rem 3rem;
+  font-family: Figtree, "Segoe UI", sans-serif;
+  color: #1c1917;
+  background: #e7ebe8;
+}
+
+.kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c2410c;
+}
+
+.buy h1 {
+  margin: 0;
+  font-family: "Archivo Black", "Arial Black", sans-serif;
+  font-size: clamp(1.8rem, 8vw, 2.4rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.price {
+  margin: 0.65rem 0 0.4rem;
+  font-size: 1.65rem;
+  font-weight: 600;
+}
+
+.desc,
+.meta {
+  margin: 0 0 0.75rem;
+  line-height: 1.45;
+  color: rgba(28, 25, 23, 0.78);
+}
+
+.warn {
+  margin: 0 0 1.25rem;
+  padding: 0.65rem 0.7rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+}
+
+.ticket {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.ticket label,
+.ticket legend {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ticket input[type="text"],
+.ticket input[type="tel"],
+.ticket input:not([type="radio"]):not([type="hidden"]) {
+  padding: 0.75rem 0.7rem;
+  font: inherit;
+  font-weight: 400;
+  border: 1px solid rgba(28, 25, 23, 0.25);
+  background: #fff;
+}
+
+.choice {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-weight: 500;
+  margin: 0.35rem 0;
+}
+
+.choice.muted {
+  opacity: 0.55;
+}
+
+.pay {
+  margin-top: 0.35rem;
+  padding: 0.95rem 1rem;
+  font: inherit;
+  font-weight: 700;
+  color: #fff7f0;
+  background: #c2410c;
+  border: 0;
+}
+
+.pay:disabled {
+  background: #78716c;
+}
+
+.menu {
+  margin: 1.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.menu a {
+  color: #1c1917;
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(28, 25, 23, 0.15);
+  padding-bottom: 0.35rem;
+  display: block;
+}
