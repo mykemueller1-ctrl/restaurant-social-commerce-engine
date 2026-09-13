@@ -1,6 +1,8 @@
 import { brand } from "@rsc/config";
 import "./home.css";
 
+const buyNow = `/o/${brand.slug}?item=community-cheese&utm_source=tiktok`;
+
 export default function Home() {
   return (
     <main className="stage">
@@ -9,14 +11,14 @@ export default function Home() {
 
       <section className="hero">
         <p className="brand">{brand.name}</p>
-        <h1 className="headline">Sell pizza in the scroll.</h1>
+        <h1 className="headline">TikTok ads land on our screen. Pickup in Fort Dodge.</h1>
         <p className="lede">
-          TikTok Shop for @{brand.social.tiktokHandle} and Facebook Reels for {brand.social.facebookPageName} — orders
-          without leaving the feed.
+          @{brand.social.tiktokHandle} traffic stays on Never86 Buy Now — no TikTok Shop, no extra login, no app.
+          Kitchen ticket is pickup at {brand.addressLine1}.
         </p>
         <div className="cta-row">
-          <a className="cta primary" href={brand.orderingUrl} target="_blank" rel="noreferrer">
-            Order food
+          <a className="cta primary" href={buyNow}>
+            Buy Community Cheese
           </a>
           <a className="cta ghost" href={brand.social.tiktokUrl} target="_blank" rel="noreferrer">
             @{brand.social.tiktokHandle}
@@ -25,28 +27,28 @@ export default function Home() {
       </section>
 
       <section className="setup" aria-labelledby="keys-heading">
-        <h2 id="keys-heading">Keys still needed</h2>
-        <p className="setup-lede">Ops checklist before live sync — secrets stay in .env.local.</p>
+        <h2 id="keys-heading">Not live until Myke Yes</h2>
+        <p className="setup-lede">Pay is locked until Stripe keys exist. Ads stay off until this URL is on a known Vercel project.</p>
         <ul className="key-list">
           <li>
-            <span>TikTok Shop</span>
-            <code>TIKTOK_APP_KEY / SECRET / SHOP_ID</code> for @{brand.social.tiktokHandle}
+            <span>Buy Now</span>
+            <code>{buyNow}</code>
           </li>
           <li>
-            <span>Meta App</span>
-            <code>META_APP_ID + META_APP_SECRET</code> for Facebook &amp; Reels
+            <span>Stripe</span>
+            <code>STRIPE_SECRET_KEY / NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</code>
           </li>
           <li>
-            <span>Facebook Page</span>
-            <code>META_PAGE_ID + META_PAGE_ACCESS_TOKEN</code> — {brand.social.facebookPageName}
+            <span>TikTok events</span>
+            <code>TIKTOK_PIXEL_ID / TIKTOK_EVENTS_ACCESS_TOKEN</code> — ads later, not Shop
           </li>
           <li>
-            <span>Instagram</span>
-            <code>META_IG_USER_ID</code> once the professional account is linked
+            <span>Meta events</span>
+            <code>META_PIXEL_ID / META_CAPI_ACCESS_TOKEN</code>
           </li>
         </ul>
         <p className="docs">
-          Full walkthrough: <code>docs/META_SETUP.md</code>
+          Contract: <code>docs/buy-now-ad-landing.md</code>
         </p>
       </section>
     </main>
